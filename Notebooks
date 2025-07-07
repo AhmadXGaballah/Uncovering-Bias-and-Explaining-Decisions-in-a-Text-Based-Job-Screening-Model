@@ -4,7 +4,9 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "gpuType": "T4"
+      "gpuType": "T4",
+      "authorship_tag": "ABX9TyM9dcRSATi5KOVy5NoEdu9d",
+      "include_colab_link": true
     },
     "kernelspec": {
       "name": "python3",
@@ -362,6 +364,16 @@
     }
   },
   "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/AhmadXGaballah/Uncovering-Bias-and-Explaining-Decisions-in-a-Text-Based-Job-Screening-Model/blob/main/Notebooks\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
     {
       "cell_type": "markdown",
       "source": [
@@ -791,8 +803,7 @@
         "s = df[SENSITIVE_COL]\n",
         "\n",
         "\n",
-        "X_temp, X_test, y_temp, y_test, s_temp, s_test = train_test_split(\n",
-        "    X, y, s, test_size=0.30, stratify=s, random_state=SEED)\n",
+        "X_temp, X_test, y_temp, y_test, s_temp, s_test = train_test_split(X, y, s, test_size=0.30, stratify=s, random_state=SEED)\n",
         "\n",
         "\n",
         "male_idx    = s_temp[s_temp == 1].index\n",
@@ -804,9 +815,7 @@
         "\n",
         "def smart_sample(index_array, n_needed, seed=SEED):\n",
         "    replace = n_needed > len(index_array)\n",
-        "    return np.random.RandomState(seed).choice(index_array,\n",
-        "                                              size=n_needed,\n",
-        "                                              replace=replace)\n",
+        "    return np.random.RandomState(seed).choice(index_array,size=n_needed,replace=replace)\n",
         "\n",
         "male_sample   = smart_sample(male_idx,   n_male_tr)\n",
         "female_sample = smart_sample(female_idx, n_female_tr)\n",
@@ -1137,9 +1146,7 @@
         ")\n",
         "baseline = Pipeline([\n",
         "    (\"prep\", numeric_processor),\n",
-        "    (\"clf\",  LogisticRegression(max_iter=1000,\n",
-        "                                class_weight=\"balanced\",\n",
-        "                                random_state=SEED))\n",
+        "    (\"clf\",  LogisticRegression(max_iter=1000,class_weight=\"balanced\",random_state=SEED))\n",
         "])\n",
         "baseline.fit(X_train, y_train)\n",
         "y_pred_base = baseline.predict(X_test)\n",
@@ -1163,9 +1170,7 @@
       "cell_type": "markdown",
       "source": [
         "## Fairness Metric Suite\n",
-        "Calculates the three IEEE-recommended group fairness gaps  \n",
-        "\n",
-        "(♂ minus ♀):  \n",
+        "Calculates the three IEEE-recommended group fairness gaps  :\n",
         "\n",
         "\n",
         "| Metric | Formula | Intuition |\n",
@@ -1292,12 +1297,7 @@
         "    pred_lbl = \"Hire\" if results_df.loc[idx,\"pred\"] else \"Not-Hire\"\n",
         "    print(f\"\\n{'='*60}\\nCase {idx} | Pred: {pred_lbl} | True: {true_lbl}\")\n",
         "    shap_val = explainer(X_test_proc[idx:idx+1])\n",
-        "    df_contrib = (pd.DataFrame({\"Feature\":feature_names,\n",
-        "                                \"SHAP\":shap_val.values[0]})\n",
-        "                  .assign(abs=lambda d: d[\"SHAP\"].abs())\n",
-        "                  .sort_values(\"abs\",ascending=False)\n",
-        "                  .head(10)\n",
-        "                  .drop(columns=\"abs\"))\n",
+        "    df_contrib = (pd.DataFrame({\"Feature\":feature_names,\"SHAP\":shap_val.values[0]}).assign(abs=lambda d: d[\"SHAP\"].abs()).sort_values(\"abs\",ascending=False).head(10).drop(columns=\"abs\"))\n",
         "    display(df_contrib)\n",
         "    shap.plots.bar(shap_val[0], max_display=10)\n",
         "\n",
@@ -3178,9 +3178,10 @@
       "cell_type": "markdown",
       "source": [
         "##  Fairness Gap Reduction Visual\n",
-        "Bar chart of Demographic Parity, Equal Opportunity, and Average Odds  \n",
+        "Bar chart of Demographic Parity, Equal Opportunity,Average Odds  and Model Accuracy\n",
+        "\n",
         "**before** vs. **after** mitigation.  \n",
-        "Zero line marks perfect parity; narrower bars = fairer model.\n"
+        "\n"
       ],
       "metadata": {
         "id": "JkX-uCTVeR_R"
